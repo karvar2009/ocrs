@@ -6,7 +6,7 @@ from .models import Car, Order
 class CarAdmin(admin.ModelAdmin):
     list_display = ("car_name", "company_name", "cost_per_day", "image",)
     list_editable = ("cost_per_day",)
-    list_filter = ("cost_per_day", "car_name",)
+    list_filter = ("cost_per_day", "company_name",)
 
 
 class OrderAdmin(admin.ModelAdmin):

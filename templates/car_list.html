@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %} Car list {% endblock %}
+
+{% block content %}
+
+    {% for obj in cars %}
+        <div>
+            <img src="{{ obj.image.url }}" alt="">
+            <p>{{ obj.car_name }}</p>
+            <p>Brand: {{ obj.company_name }}<br>
+                Num of seats: {{ obj.num_of_seats }}<br>
+                Cost: ${{ obj.cost_per_day }}<br>
+            </p>
+        </div>
+    {% endfor %}
+
+
+{% endblock %}
