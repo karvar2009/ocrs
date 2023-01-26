@@ -8,6 +8,28 @@ def uploaded_location(inst, f_name):
     return f"{inst.car_name}/{f_name}"
 
 
+class Brands(models.Model):
+    BRAND_CHOICES = (
+        ("B", "Стандарт"),
+        ("C", "Стандарт+"),
+        ("E", "Бизнес"),
+        ("F", "Премиум"),
+    )
+
+    brand_name = models.CharField(max_length=100)
+    wiki_link = models.URLField()
+    segment = models.CharField(max_length=100, choices=BRAND_CHOICES)
+
+    class Meta:
+        ordering = ["segment",]
+        verbose_name = "Автомобильный бренд"  # название на странице добавления сущности в БД
+        verbose_name_plural = "Автомобильные бренды"  # название в админке
+
+    def __str__(self):
+        return self.brand_name
+
+
+
 class Car(models.Model):
     image = models.ImageField(upload_to=uploaded_location,
                               null=True, blank=True,
@@ -17,11 +39,16 @@ class Car(models.Model):
     width_field = models.IntegerField(default=0)
 
     car_name = models.CharField(max_length=100)
-    company_name = models.CharField(max_length=100)
+    company_name = models.ForeignKey(Brands, on_delete=models.CASCADE, default=None)
+    # организуем связь между полем company_name и таблицей Brands
     num_of_seats = models.IntegerField()
     cost_per_day = models.CharField(max_length=50)
     content = models.TextField()
     like = models.IntegerField(default=0)
+
+    class Meta:
+        verbose_name = "Машину"
+        verbose_name_plural = "Машины"
 
     def __str__(self):
         return self.car_name
@@ -38,6 +65,10 @@ class Order(models.Model):
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     closed = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = "Заказ"
+        verbose_name_plural = "Заказы"
 
     def __str__(self):
         return self.car_name.car_name
