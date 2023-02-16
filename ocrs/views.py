@@ -1,4 +1,7 @@
 from django.shortcuts import render, get_object_or_404
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import HttpResponse, HttpResponseRedirect
+from django.db.models import Q  # работа с поисковыми запросами в Django
 from .models import Car, Order
 # Create your views here.
 
@@ -9,6 +12,23 @@ def home(request):
 
 def car_list(request):
     cars = Car.objects.all()
+    query = request.GET.get('q')  # забираем запрос от формы с методом отправки GET
+    if query:  # если запрос состоялся
+        cars = cars.filter(
+            Q(car_name__icontains=query),
+            Q(company_name__icontains=query),
+            Q(cost_per_day__icontains=query),
+            Q(num_of_seats__icontains=query)
+        )
+    # пагинация
+    paginator = Paginator(cars, 5)  # отображаем по 5 машин на странице
+    page = request.GET.get('page')
+    try:
+        cars = paginator.page(page)
+    except PageNotAnInteger:  # если пользователь вписал номер страницы как текст
+        cars = paginator.page(1)  # перенесем его на первую страницу с машинами
+    except EmptyPage:  # если пользователь вписал номер страницы, например, 9999999
+        cars = paginator.page(paginator.num_pages)  # перемещаем его на последнюю страницу с машинами
     return render(request, "car_list.html", {'cars': cars})
 
 
