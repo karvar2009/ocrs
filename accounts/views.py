@@ -13,14 +13,15 @@ def login_view(request):
                             password=password)
         if not request.user.is_staff:
             login(request, user)  # логиним
-            return redirect("newcar/")
+            return redirect("home")
     return render(request, "form.html", {"form": form,
                                          "title": "Login"})
 
 
 def logout_view(request):
     logout(request)
-    return render(request, "home.html")
+    #return render(request, "home.html")
+    return redirect("home")
 
 
 def register_view(request):
