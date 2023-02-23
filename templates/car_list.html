@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 {% block title %} Car list {% endblock %}
 
 {% block content %}
+
+    <form method="get">
+        {{ filter.form|crispy }}
+        <input type="submit" value="filter">
+    </form>
 
     {% for obj in cars %}
         <div>
@@ -13,6 +19,7 @@
                Num of seats: {{ obj.num_of_seats }}<br>
                Cost: ${{ obj.cost_per_day }}<br>
             </p>
+            <p>Info: {{ obj.content|safe }}</p>
         </div>
     {% endfor %}
 

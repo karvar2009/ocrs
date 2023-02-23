@@ -3,6 +3,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db.models import Q  # работа с поисковыми запросами в Django
 from .models import Car, Order
+from .filters import CarFilter
 # Create your views here.
 
 
@@ -12,6 +13,10 @@ def home(request):
 
 def car_list(request):
     cars = Car.objects.all()
+
+    cars_filter = CarFilter(request.GET, queryset=cars)  # фильтровать список cars формой с методом get
+    cars = cars_filter.qs
+
     query = request.GET.get('q')  # забираем запрос от формы с методом отправки GET
     if query:  # если запрос состоялся
         cars = cars.filter(
@@ -29,7 +34,7 @@ def car_list(request):
         cars = paginator.page(1)  # перенесем его на первую страницу с машинами
     except EmptyPage:  # если пользователь вписал номер страницы, например, 9999999
         cars = paginator.page(paginator.num_pages)  # перемещаем его на последнюю страницу с машинами
-    return render(request, "car_list.html", {'cars': cars})
+    return render(request, "car_list.html", {'cars': cars, 'filter': cars_filter})
 
 
 def create_order(request):

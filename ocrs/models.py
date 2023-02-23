@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils.safestring import mark_safe
+from tinymce import models as tinymce_models
 from django import forms
 
 # Create your models here.
@@ -43,7 +45,7 @@ class Car(models.Model):
     # организуем связь между полем company_name и таблицей Brands
     num_of_seats = models.IntegerField()
     cost_per_day = models.CharField(max_length=50)
-    content = models.TextField()
+    content = tinymce_models.HTMLField(max_length=7000, blank=True, null=True, db_index=True)
     like = models.IntegerField(default=0)
 
     class Meta:
