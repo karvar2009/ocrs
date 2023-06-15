@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="section-title-page area-bg area-bg_dark area-bg_op_70">
+        <div class="area-bg__inner">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h1 class="b-title-page bg-primary_a">{{ title }}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bg-grey">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    {% block breadcrumbs %}
+                        <ol class="breadcrumb">
+                            <li><a href="{% url 'home' %}"><i class="icon fa fa-home"></i></a>
+                            </li>
+                            <li class="active">{% if title %} {{ title }} {% endif %}</li>
+                        </ol>
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <h1>{{ order.car_name }}</h1>
+            <img src="{{ order.car_name.image.url }}" alt="{{ order.car_name }}">
+            <p>Начало аренды: {{ order.start_date }}</p>
+            <p>Конец аренды: {{ order.end_date }}</p>
+            <p>Цена заказа: {{ order.price }} р</p>
+        </div>
+    </div>
+
+{% endblock %}

@@ -40,9 +40,11 @@ INSTALLED_APPS = [
     'ocrs.apps.OcrsConfig',
     'accounts.apps.AccountsConfig',
     #'django_filters',
+    'widget_tweaks',
     'crispy_forms',
     'crispy_bootstrap5',
     'tinymce',
+    'slider',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -139,3 +141,20 @@ MEDIA_ROOT = os.path.join(BASE_DIR,
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
+TINYMCE_DEFAULT_CONFIG = {
+    "height": "60vh",
+    "width": "100%",
+    "menubar": "file edit view insert format tools table help",
+    "plugins": "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code "
+    "fullscreen insertdatetime media table paste code help wordcount spellchecker",
+    "toolbar": "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft | code "
+    "aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist | forecolor "
+    "backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons | "
+    "fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | "
+    "a11ycheck ltr rtl | showcomments addcomment",
+    "custom_undo_redo_levels": 10,
+    "language": "ru-ru",  # To force a specific language instead of the Django current language.
+    "skin": "oxide-dark"
+}

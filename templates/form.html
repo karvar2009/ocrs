@@ -1,13 +1,34 @@
-{% extends "base.html" %}
-
-{% block title %} {{ title }} {% endblock %}
-
+{% extends 'base.html' %}
+{% load widget_tweaks %}
 {% block content %}
-    <h1>{{ title }}</h1>
+    <div class="section-title-page area-bg area-bg_dark area-bg_op_70">
+        <div class="area-bg__inner">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h1 class="b-title-page bg-primary_a">{{ title }}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <main class="container form-signin w-100 m-auto">
+        <form method="post">
+            {% csrf_token %}
+            <img class="mb-4" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">
+            <h1 class="h3 mb-3 fw-normal">{{ title }}</h1>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" class="btn btn-primary" value="{{ title }}">
-    </form>
+            {% for field in form %}
+                <div class="form-floating">
+                    {{ field|add_class:'form-control' }}
+                </div>
+            {% endfor %}
+            <input class="w-100 btn btn-lg btn-primary" type="submit" value="{{ title }}">
+            <p class="mt-5 mb-3 text-body-secondary">© 2017–2023</p>
+        </form>
+    {% for error in form.errors %}
+        <div class="alert danger_alert" style="font-size: 1.4em">{{ form.non_field_errors }}</div>
+    {% endfor %}
+
+    </main>
 {% endblock %}

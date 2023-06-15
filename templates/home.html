@@ -1,25 +1,30 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
-
-    <div class="about container-fluid">
-        <h1>Online car rental system</h1>
-        <div class="row">
-            <div class="col-sm-8">
-                <h2>About company</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A culpa cupiditate dolor, eligendi eveniet,
-                   ex excepturi explicabo fugit, id ipsam libero nulla numquam quia veritatis voluptatum? Ducimus
-                   expedita perspiciatis voluptate?</p>
-                <p>A cum dolorem est iste provident quasi ratione! Hic minima, nulla officia praesentium qui quis
-                   reprehenderit sint tempora voluptatem voluptates! Cupiditate in inventore maiores repudiandae sequi.
-                   Ab nesciunt pariatur quidem?</p>
-            </div>
-            <div class="col-sm-4">
-                <p>Тут будет лого!</p>
+    {% if slider %}
+        <div class="main-slider main-slider-1">
+            <div class="slider-pro" id="main-slider" data-slider-width="100%" data-slider-height="850vh"
+                 data-slider-arrows="true" data-slider-buttons="false">
+                <div class="sp-slides">
+                    {% for slide in slider %}
+                        <div class="sp-slide">
+                            <img class="sp-image" src="{{ MEDIA_URL }}{{ slide.img.url }}"
+                                 alt="тут должна была быть картинка"/>
+                            <div class="main-slider__wrap sp-layer" data-width="" data-position="centerLeft"
+                                 data-horizontal="62%" data-show-transition="left" data-hide-transition="left"
+                                 data-show-duration="2000" data-show-delay="1200" data-hide-delay="400">
+                                <div class="main-slider__title">mercedes benz<span
+                                        class="main-slider__label bg-primary">{{ slide.heading }}</span>
+                                </div>
+                                <div>{{ slide.text|safe }}</div>
+                                <a class="main-slider__btn btn btn-white btn-lg" href="{{ slide.url }}">Узнать
+                                    больше</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
-    </div>
-
+    {% endif %}
+    <h1>Основная страница</h1>
 {% endblock %}
-

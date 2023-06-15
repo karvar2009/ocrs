@@ -1,40 +1,184 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
-{% block title %} Car list {% endblock %}
+
 
 {% block content %}
-
-    <form method="get">
-        {{ filter.form|crispy }}
-        <input type="submit" value="filter">
-    </form>
-
-    {% for obj in cars %}
-        <div>
-            {% if obj.image %}
-                <img src="{{ obj.image.url }}" alt="">
-            {% endif %}
-            <p>{{ obj.car_name }}</p>
-            <p>Brand: {{ obj.company_name }}<br>
-               Num of seats: {{ obj.num_of_seats }}<br>
-               Cost: ${{ obj.cost_per_day }}<br>
-            </p>
-            <p>Info: {{ obj.content|safe }}</p>
+    <div class="section-title-page area-bg area-bg_dark area-bg_op_70">
+        <div class="area-bg__inner">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h1 class="b-title-page bg-primary_a">{{ title }}</h1>
+                    </div>
+                </div>
+            </div>
         </div>
-    {% endfor %}
+    </div>
 
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            {% if cars.has_previous %}
-                <li class="page-item"><a class="page-link" href="?page={{ cars.previous_page_number }}">Previous</a></li>
-            {% endif %}
-            {% for page in cars.paginator.page_range %}
-                <li class="page-item"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
-            {% endfor %}
-            {% if cars.has_next %}
-                <li class="page-item"><a class="page-link" href="?page={{ cars.next_page_number }}">Next</a></li>
-            {% endif %}
-        </ul>
-    </nav>
+    <div class="bg-grey">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    {% block breadcrumbs %}
+                        <ol class="breadcrumb">
+                            <li><a href="{% url 'home' %}"><i class="icon fa fa-home"></i></a>
+                            </li>
+                            <li class="active">{% if title %} {{ title }} {% endif %}</li>
+                        </ol>
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9 col-md-push-3">
+                <main class="l-main-content">
+                    <div class="filter-goods">
+                        <div class="filter-goods__info">Showing results from<strong> 1 - 10</strong> of
+                            total<strong> {{ cars|length }}</strong>
+                        </div>
+                        <div class="filter-goods__select"><span class="hidden-xs">Sort</span>
+                            <select class="selectpicker" data-width="172">
+                                <option>Most Revelant</option>
+                                <option>A-Z</option>
+                                <option>Z-A</option>
+                            </select>
+                            <div class="btns-switch"><i
+                                    class="btns-switch__item js-view-th active icon fa fa-th-large"></i><i
+                                    class="btns-switch__item js-view-list icon fa fa-th-list"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end .filter-goods-->
+                    <div class="goods-group-2 list-goods list-goods_th">
+                        {% for car in cars %}
+                            <section class="b-goods-1 b-goods-1_mod-a">
+                                <div class="row">
+                                    <div class="b-goods-1__img">
+                                        <a class="js-zoom-images" href="{{ car.image.url }}">
+                                            <img class="img-responsive" src="{{ car.image.url }}" alt="foto"/>
+                                        </a><span class="b-goods-1__price hidden-th">${{ car.cost_per_day }}/day</span>
+                                    </div>
+                                    <div class="b-goods-1__inner">
+                                        <div class="b-goods-1__header"><a class="b-goods-1__choose hidden-th"
+                                                                          href="{% url 'like' car_id=car.id %}"><i
+                                                class="icon fa fa-heart-o"> {{ car.like }}</i></a>
+                                            <h2 class="b-goods-1__name"><a
+                                                    href="{% url 'car_detail' name=car.car_name %}">{{ car.company_name }} {{ car.car_name }}
+                                                {% if car.booked %}
+                                                    <span class="badge bg-warning">Booked</span> {% endif %}
+                                            </a>
+                                            </h2>
+                                        </div>
+                                        <div class="b-goods-1__info">{{ car.content|safe }}</div>
+                                        <span class="b-goods-1__price_th text-primary visible-th">${{ car.cost_per_day }}/day</span>
+                                        </span>
+
+                                        {% if car.specifications.all %}
+                                            <div class="b-goods-1__section hidden-th">
+                                                <h3 class="b-goods-1__title" data-toggle="collapse"
+                                                    data-target="#list-1">
+                                                    specifications</h3>
+                                                <div class="collapse in" id="list-1">
+                                                    <ul class="b-goods-1__list list list-mark-5">
+                                                        {% for spec in car.specifications.all %}
+                                                            <li class="b-goods-1__list-item">{{ spec }}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        <a href="{% url 'create_order' car_id=car.id %}"
+                                           class="btn btn-primary {% if car.booked %}disabled{% endif %}">Rent</a>
+                                        {% if user.is_staff %}
+                                            <a href="{% url 'car_edit' car_id=car.id %}" class="btn btn-primary">Edit
+                                                car</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </section>
+                        {% endfor %}
+                    </div>
+                    <!-- end .goods-group-2-->
+                    <ul class="pagination text-center">
+                        {% if cars.has_previous %}
+                            <li>
+                                <a href="?page={{ cars.previous_page_number }}">
+                                    <i class="icon fa fa-angle-double-left"></i>
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="disabled">
+                                <a href="?page={{ i }}">
+                                    <i class="icon fa fa-angle-double-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% for i in cars.paginator.page_range %}
+                            {% if cars.number == i %}
+                                <li class="active"><a href="?page={{ i }}">{{ i }}</a></li>
+                            {% else %}
+                                <li><a href="?page={{ i }}">{{ i }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if cars.has_next %}
+                            <li><a href="?page={{ cars.next_page_number }}"><i
+                                    class="icon fa fa-angle-double-right"></i></a></li>
+                        {% else %}
+                            <li class="disabled"><a href="?page={{ i }}"><i
+                                    class="icon fa fa-angle-double-right"></i></a></li>
+                        {% endif %}
+                    </ul>
+                </main>
+                <!-- end .l-main-content-->
+            </div>
+            <div class="col-md-3 col-md-pull-9">
+                <aside class="l-sidebar">
+                    <form class="b-filter-2 bg-grey" method="POST">
+                        {% csrf_token %}
+                        <h3 class="b-filter-2__title">search options</h3>
+                        <div class="b-filter-2__inner">
+                            <div class="b-filter-2__group">
+                                <div class="b-filter-2__group-title">keyword</div>
+                                <input class="form-control" type="text" placeholder="Keyword..."/>
+                            </div>
+                            <div class="b-filter-2__group">
+                                <div class="b-filter-2__group-title">Brand</div>
+                                <select name="brand" class="selectpicker" data-width="100%">
+                                    {% for brand in brands %}
+                                        <option value="{{ brand }}">{{ brand }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="b-filter-2__group">
+                                <div class="b-filter-2__group-title">Model</div>
+                                <select name="model" class="selectpicker" data-width="100%">
+                                    {% for car in cars %}
+                                        <option value="{{ car.car_name }}">{{ car.car_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="b-filter-2__group">
+                                <div class="b-filter-2__group-title">Filter Price</div>
+                                <div class="ui-filter-slider">
+                                    <div id="slider-price"></div>
+                                    <div class="ui-filter-slider__info">
+                                        <div class="ui-filter-slider__label">Price Range:</div>
+                                        <span class="ui-filter-slider__current"
+                                              id="slider-snap-value-lower"></span>-<span
+                                            class="ui-filter-slider__current" id="slider-snap-value-upper"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="submit" value="filter">
+                        </div>
+                    </form>
+                    <!-- end .b-filter-->
+                </aside>
+                <!-- end .l-sidebar-->
+            </div>
+        </div>
+    </div>
 {% endblock %}

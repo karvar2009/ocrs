@@ -23,13 +23,23 @@ class Brands(models.Model):
     segment = models.CharField(max_length=100, choices=BRAND_CHOICES)
 
     class Meta:
-        ordering = ["segment",]
+        ordering = ["segment", ]
         verbose_name = "Автомобильный бренд"  # название на странице добавления сущности в БД
         verbose_name_plural = "Автомобильные бренды"  # название в админке
 
     def __str__(self):
         return self.brand_name
 
+
+class Specifications(models.Model):
+    name = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'фишку'
+        verbose_name_plural = 'фишки'
 
 
 class Car(models.Model):
@@ -47,6 +57,8 @@ class Car(models.Model):
     cost_per_day = models.CharField(max_length=50)
     content = tinymce_models.HTMLField(max_length=7000, blank=True, null=True, db_index=True)
     like = models.IntegerField(default=0)
+    booked = models.BooleanField(default=False)
+    specifications = models.ManyToManyField(Specifications, blank=True)
 
     class Meta:
         verbose_name = "Машину"
@@ -61,6 +73,7 @@ class Car(models.Model):
 
 class Order(models.Model):
     car_name = models.ForeignKey(Car, on_delete=models.CASCADE)
+    price = models.IntegerField()
     employee_name = models.CharField(max_length=100)
     cell_no = models.CharField(max_length=20)
     address = models.TextField()
@@ -78,3 +91,18 @@ class Order(models.Model):
     def get_absolute_url(self):
         return f'/car/detail/{self.id}'
 
+
+class FeedbackMsg(models.Model):
+    name = models.CharField(max_length=200)
+    email = models.EmailField()
+    message = tinymce_models.HTMLField(max_length=7000, blank=True, null=True, db_index=True)
+    checked = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = 'Обратную связь'
+        verbose_name_plural = 'Обратная связь'
+
+
+class CarSpecification(models.Model):
+    car = models.ForeignKey(Car, on_delete=models.CASCADE)
+    feature = models.ForeignKey(Specifications, on_delete=models.CASCADE)
